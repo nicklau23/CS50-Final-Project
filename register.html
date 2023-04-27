@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Register
+{% endblock %}
+
+{% block main %}
+
+<form action="/register" method="post">
+    <div class="border" style="display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: white; position: absolute; top: 220px; left: 65.5vh; height: 450px; width: 450px">
+        <div class="border" style="width: 300px; height: 90px; font-color: grey; font-size: 1vh; margin-bottom: 15px; margin-top: -40px">
+            <p class="display=6" style="position: relative; top: 10px; margin-left: 3px; margin-right: 3px">&copy; OpenTEE will not share your information with third-parties. Payment information is not stored in our databases. We will never ask you for your personal data outside of our site.</p>
+        </div>
+    <div class="mb-3">
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="fullname" name="fullname" placeholder="Full Name" type="text">
+    </div>
+    <div class="mb-3">
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">
+    </div>
+    <div class="mb-3">
+        <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
+    </div>
+    <div class="mb-3">
+        <input class="form-control mx-auto w-auto" id="confirmation" name="confirmation" placeholder="Confirm Password" type="password">
+    </div>
+    <button class="btn btn-primary" type="submit">Register</button>
+    </div>
+</form>
+
+{% endblock %}

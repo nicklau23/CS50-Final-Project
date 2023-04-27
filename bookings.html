@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" rel="stylesheet">
+    <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDV9euJFhqU56xoWHB1wVnE6wGSaVgjZx8"></script>
+
+    <link href="/static/140399.png" rel="icon">
+    <link href="/static/styles.css" rel="stylesheet">
+    <title>OpenTEE: Bookings</title>
+</head>
+
+<body style="height: calc(100vh + {{ new_distance }} * 120px)">
+    <div>
+    <nav class="bg-light border navbar navbar-expand-md navbar-light">
+        <div class="container-fluid">
+            <img src="/static/140399.png" class="logo" rel="icon">
+            <a class="navbar-brand" href="/"><span class="blue">Open</span><span class="green">TEE</span></a>
+            <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+                {% if session["user_id"] %}
+                <ul class="navbar-nav me-auto mt-2">
+                    <li class="nav-item"><a class="nav-link" href="/courses">Find Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/bookings">Bookings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/account">Account</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto mt-2">
+                    <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+                </ul>
+                {% else %}
+                        <ul class="navbar-nav ms-auto mt-2">
+                            <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
+                        </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    {% if get_flashed_messages() %}
+            <header>
+                <div class="alert alert-primary mb-0 text-center" role="alert">
+                    {{ get_flashed_messages() | join(" ") }}
+                </div>
+            </header>
+    {% endif %}
+
+    <main class="container-fluid py-5 text-center">
+
+<div class="account_heading border display-5" style="margin-bottom: -10px">
+    <p><strong>Booking History</strong></p>
+</div>
+
+<table class="table table-striped table-light">
+    <thead>
+        <th scope="col" style="font-size: 2.5vh">Course</th>
+        <th scope="col" style="font-size: 2.5vh">Date</th>
+        <th scope="col" style="font-size: 2.5vh">Time</th>
+        <th scope="col" style="font-size: 2.5vh">Price</th>
+        <th scope="col" style="font-size: 2.5vh">Players</th>
+        <th scope="col" style="font-size: 2.5vh">Reservation</th>
+
+
+
+    </thead>
+    <tbody>
+        {% for t in hold %}
+        <tr>
+            <td style="font-size: 2vh">{{ t.course }}</td>
+            <td style="font-size: 2vh"> {{ t.date }}</td>
+            <td style="font-size: 2vh"> {{ t.time }}</td>
+            <td style="font-size: 2vh"> {{ t.price }}</td>
+            <td style="font-size: 2vh"> {{ t.party_count }}</td>
+            <td style="font-size: 2vh"> {{ t.name }}</td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+
+
+
+<div class="col-md-8" id="upcoming-reservations" style="display: block">
+    <div class="card" style="display: block; position: relative; top: 50px; left: 535px; width: 700px; height: auto">
+        <div class="card-body tab-content">
+            <div class="tab-pane active">
+                <div style="display: flex; flex-direction: column; margin-top: 12px">
+                <h6 style="margin-bottom: -5px; font-size: 2.5vh; float: left"><strong>Upcoming Reservations</strong></h6>
+                <hr>
+                </div>
+
+                    <div style="display: flex; flex-direction: column">
+                    {% if upcomings %}
+                    {% for l in upcomings %}
+                    <form action="/bookings" method="POST">
+                        <div class="form-group" style="display: flex; flex-direction: row; position: relative; left: 5vh; margin-bottom: 70px">
+                            <div style="display: flex; flex-direction: column">
+                            <label for="course" style="font-size: 2vh; position: relative; left: 0px" value="{{ l.course }}">{{ l.course }}</label>
+                            <input style="display: none; font-size: 2vh; position: relative; left: 0px" name="course-n" value="{{ l.course }}"></input>
+                            <label for="date" style="position: absolute; top: 30px; left: 0px" value="{{ l.date }}">Scheduled: {{ l.date }}</label>
+                            <input style="display: none; font-size: 2vh; position: relative; left: 0px" name="course-d" value="{{ l.date }}"></input>
+                            <input style="display: none; font-size: 2vh; position: relative; left: 0px" name="course-p" value="{{ l.price }}"></input>
+                            <label for="time" style="position: absolute; top: 55px; left: 0px" value="{{ l.time }}">Time: {{ l.time }}</label>
+                            <input style="display: none; font-size: 2vh; position: relative; left: 0px" name="course-t" value="{{ l.time }}"></input>
+                            </div>
+                            <button class="btn btn-danger" style="position: absolute; top: 35 px; left: 500px; margin-top: 15px; margin-bottom: 15px; margin-right: 7px" type="submit">Cancel</button>
+                        </div>
+                    </form>
+                    {% endfor %}
+                    {% else %}
+                    <div class="form-group" style="display: flex; flex-direction: row; position: relative; left: 5vh; margin-bottom: 70px">
+                        <div style="display: flex; flex-direction: column">
+                        <label style="font-size: 3.5vh; position: relative; top: 30px; left: 125px">No Current Bookings</label>
+                        </div>
+                    </div>
+                    {% endif %}
+
+
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+</main>
+</div>
+</body>
+<footer style="position: fixed; bottom: 0">
+    <nav class="bg-light border navbar navbar-expand-md navbar-light">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="navbar-nav me-auto mt-2">
+                    <li class="nav-item"><a class="nav-link" href="/forbusinesses">For Businesses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/aboutus">About Us</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto mt-2">
+                    <li class="nav-item">&copy; 2023 OpenTEE. All Rights Reserved.</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</footer>
+
+</html>

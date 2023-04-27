@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block title %}
+About Us
+{% endblock %}
+
+{% block main %}
+
+<div class="video-background" id="video-background">
+    <video autoplay loop muted>
+        <source src="/static/golf-court-700.mp4/" type="video/mp4">
+    </video>
+</div>
+
+
+<div class="col-md-8" id="about" style="display: block; position: relative; top: -150px; left: -65px">
+    <div class="adjuster card">
+        <div class="card-body tab-content">
+            <div class="tab-pane active">
+                <div style="display: flex; flex-direction: column; margin-top: 12px">
+                <h6 style="margin-bottom: -5px; font-size: 1.9vh; float: left"><strong>About Us</strong></h6>
+                <hr>
+                </div>
+                    <div style="display: flex; flex-direction: column">
+                    <div class="form-group" style="margin-bottom: 10px">
+                        <label for="privacy" style="float: center">Background</label>
+                        <small class="form-text text-muted" id="privacy" style="float: left; margin-bottom: 5px">&copy; OpenTEE was developed by Nick Laurito in 2023 as a student project for Harvard's CS50x course. Our site allows you to search for local golf courses anywhere in the world and book tee times using the "Find Courses" tab.</small>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px">
+                        <label for="ads" style="float: center">Accessibility</label>
+                        <small class="form-text text-muted" id="ads" style="float: left; margin-bottom: 5px">&copy; OpenTEE uses different API's to provide a unique user experience. Our search function is powered by Google Maps and will allow users to get information from real courses around the world.</small>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 10px">
+                        <div style="display: flex; flex-direction: column">
+                        <label for="privacy" style="float: center">Contact</label>
+                        </div>
+                        <small class="form-text text-muted" id="privacy" style="float: center; margin-bottom: 5px">Please contact help@opentee.com for more information.</small>
+                    </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}
+For Businesses
+{% endblock %}
+
+{% block main %}
+
+<div class="video-background" id="video-background">
+    <video autoplay loop muted>
+        <source src="/static/golf-court-700.mp4/" type="video/mp4">
+    </video>
+</div>
+
+
+<div class="col-md-8" id="businessinfo" style="display: block; position: relative; top: -150px; left: -65px">
+    <div class="adjuster card">
+        <div class="card-body tab-content">
+            <div class="tab-pane active">
+                <div style="display: flex; flex-direction: column; margin-top: 12px">
+                <h6 style="margin-bottom: -5px; font-size: 1.9vh; float: left"><strong>Business Information</strong></h6>
+                <hr>
+                </div>
+                    <div style="display: flex; flex-direction: column">
+                    <div class="form-group" style="margin-bottom: 10px">
+                        <label for="privacy" style="float: center">How To Apply</label>
+                        <small class="form-text text-muted" id="privacy" style="float: left; margin-bottom: 5px">To apply for a club account please reach out to apply@opentee.com. OpenTee provides Club Members with unique account features which requires assisted account setup.</small>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px">
+                        <label for="ads" style="float: center">Mobile Development</label>
+                        <small class="form-text text-muted" id="ads" style="float: left; margin-bottom: 5px">&copy; OpenTEE is currently only available through our web application. Mobile development is in beta testing and will be available soon!</small>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px">
+                        <label for="privacy" style="float: center">Disclaimer</label>
+                        <small class="form-text text-muted" id="privacy" style="float: left; margin-bottom: 5px">&copy; OpenTEE is a student spec project and is not currently a functioning business. For best results, use a desktop computer.</small>
+                    </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

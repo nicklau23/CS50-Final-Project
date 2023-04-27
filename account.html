@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" rel="stylesheet">
+    <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" defer></script>
+
+    <script defer>
+        document.addEventListener('DOMContentLoaded', function(){
+            document.getElementById("account").addEventListener('click', function onClick()
+            {
+                document.getElementById("profile").style.display = "block";
+                document.getElementById("secure").style.display = "none";
+                document.getElementById("deposit").style.display = "none";
+                document.getElementById("p-bookings").style.display = "none";
+            })
+
+            document.getElementById("security").addEventListener('click', function onClick()
+            {
+                document.getElementById("profile").style.display = "none";
+                document.getElementById("secure").style.display = "block";
+                document.getElementById("deposit").style.display = "none";
+                document.getElementById("p-bookings").style.display = "none";
+            })
+            document.getElementById("funds").addEventListener('click', function onClick()
+            {
+                document.getElementById("profile").style.display = "none";
+                document.getElementById("secure").style.display = "none";
+                document.getElementById("deposit").style.display = "block";
+                document.getElementById("p-bookings").style.display = "none";
+            })
+            document.getElementById("bookings").addEventListener('click', function onClick()
+            {
+                document.getElementById("profile").style.display = "none";
+                document.getElementById("secure").style.display = "none";
+                document.getElementById("deposit").style.display = "none";
+                document.getElementById("p-bookings").style.display = "block";
+            })
+            document.getElementById("delete").addEventListener('click', function onClick()
+            {
+                var confirmed = confirm("Are you sure you want to delete your account? This action is permanent.");
+                if (confirmed) {
+                    fetch('/delete')
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        window.location.href = "/login";
+                    })
+                    .catch(error => console.error(error));
+                                }
+            })
+
+        })
+    </script>
+    <link href="/static/140399.png" rel="icon">
+    <link href="/static/styles.css" rel="stylesheet">
+    <title>OpenTEE: Account </title>
+</head>
+
+<body class="body">
+    <div>
+    <nav class="bg-light border navbar navbar-expand-md navbar-light">
+        <div class="container-fluid">
+            <img src="/static/140399.png" class="logo" rel="icon">
+            <a class="navbar-brand" href="/"><span class="blue">Open</span><span class="green">TEE</span></a>
+            <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+                {% if session["user_id"] %}
+                <ul class="navbar-nav me-auto mt-2">
+                    <li class="nav-item"><a class="nav-link" href="/courses">Find Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/bookings">Bookings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/account">Account</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto mt-2">
+                    <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+                </ul>
+                {% else %}
+                        <ul class="navbar-nav ms-auto mt-2">
+                            <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
+                        </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    {% if get_flashed_messages() %}
+            <header>
+                <div class="alert alert-primary mb-0 text-center" role="alert">
+                    {{ get_flashed_messages() | join(" ") }}
+                </div>
+            </header>
+    {% endif %}
+
+    <main class="container-fluid py-5 text-center">
+
+<div class="account_heading border display-5">
+    <p><strong>Welcome, {{ fullname }}!</strong></p>
+</div>
+
+<div class="row gutters-lg" style="position: absolute; width: 1200px; height: 800px; top: 250px; left: 150px">
+    <div class="col-md-4 d-none d-md-block">
+        <div class="card">
+            <div class="card-body">
+                <nav class="arrangment nav flex-column nav-pills nav-gap-y-1">
+                    <div class="acc">
+                    <img class="icon options" src="/static/17004.png/">
+                    <button class="options profile nav-item nav-link has-icon nav-link-faded" id="account">Account Settings</button>
+                    </div>
+                    <div class="acc">
+                    <img class="options icon" src="/static/1923.png/">
+                    <button class="options profile nav-item nav-link has-icon nav-link-faded" id="security">Security</button>
+                    </div>
+                    <div class="acc">
+                    <img class="options icon" src="/static/bank-building.png/">
+                    <button class="options profile nav-item nav-link has-icon nav-link-faded" id="funds">Deposit Funds</button>
+                    </div>
+                    <div class="acc">
+                    <img class="options icon" src="/static/2669764.png/">
+                    <button class="options profile nav-item nav-link has-icon nav-link-faded" id="bookings">Bookings</button>
+                    </div>
+                    </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-8" id="profile" style="display: block">
+    <div class="adjuster card">
+        <div class="card-body tab-content">
+            <div class="tab-pane active">
+                <div style="display: flex; flex-direction: column; margin-top: 12px">
+                <h6 style="margin-bottom: -5px; font-size: 1.9vh; float: left"><strong>Account Settings</strong></h6>
+                <hr>
+                </div>
+                <form action="/account" method="POST">
+                    <div style="display: flex; flex-direction: column">
+                    <div class="form-group">
+                        <label for="fullname" style="float: left">Full Name</label>
+                        <input aria-describedby="fullnameassist" class="form-control" id="fullname" name="fullname" type="text" placeholder="Enter Your Full Name" value="{{ fullname }}">
+                        <small class="form-text text-muted" id="fullnameassist" style="float: left; margin-bottom: 5px">Your information will not be shared with third-parties.</small>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px">
+                        <label for="pswd" style="float: left">Change Password</label>
+                        <input class="form-control" id="pswd" name="pswd" type="text" placeholder="New Password">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 12px">
+                        <label for="location" style="float: left">Location</label>
+                        <input aria-describedby="locate" class="form-control" id="location" name="location" type="text" placeholder="Input Nearest City">
+                        <small class="form-text text-muted" id="locate" style="float: left; margin-bottom: 5px">Location data is for our own aggregational purposes. "Find Courses" will refer to the city you manually input.</small>
+                    </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 20px">
+                        <small class="form-text text-muted" id="message" style="float: left">All fields on this page are optional. By saving changes, all fields of entry will be updated to your profile.</small>
+                    </div>
+                    <button class="btn btn-primary" id="save" style="float: left; margin-top: 15px; margin-bottom: 15px; margin-right: 7px" type="submit">Update Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-md-8" id="secure" style="display: none">
+    <div class="adjuster card">
+        <div class="card-body tab-content">
+            <div class="tab-pane active">
+                <div style="display: flex; flex-direction: column; margin-top: 12px">
+                <h6 style="margin-bottom: -5px; font-size: 1.9vh; float: left"><strong>Security</strong></h6>
+                <hr>
+                </div>
+                <form>
+                    <div style="display: flex; flex-direction: column">
+                    <div class="form-group" style="margin-bottom: 10px">
+                        <label for="privacy" style="float: left">Privacy Statement</label>
+                        <small class="form-text text-muted" id="privacy" style="float: left; margin-bottom: 5px">&copy; OpenTEE will not share your information with third-parties. Payment information is not stored in our databases. We will never ask you for your personal data outside of our site.</small>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 35px">
+                        <label for="ads" style="float: left">Advertisements</label>
+                        <small class="form-text text-muted" id="ads" style="float: left; margin-bottom: 5px">Any ads displayed on our site are generalized and not customized to the individual user. We DO NOT use your personal data from outside sources in your experience with &copy; OpenTEE.</small>
+                    </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column">
+                    <button class="btn btn-danger" id="delete" name="delete" style="position: relative; right: -27.5vh; width: 200px; margin-bottom: 10px" type="button">Delete Account</button>
+                    <small class="form-text text-muted" id="statement" style="margin-bottom: 15px">Account deletion is permanent. Once confirmed, all of your data and previous transactions will be lost.</small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-8" id="deposit" style="display: none">
+    <div class="adjuster card">
+        <div class="card-body tab-content">
+            <div class="tab-pane active">
+                <div style="display: flex; flex-direction: column; margin-top: 12px">
+                <h6 style="margin-bottom: -5px; font-size: 1.9vh; float: left"><strong>Deposit Funds</strong></h6>
+                <hr>
+                </div>
+                <form action="/account" method="POST">
+                    <div style="display: flex; flex-direction: column">
+                    <div class="form-group" style="margin-bottom: 10px">
+                        <label for="balance" style="font-size: 2.5vh; float: left">Current Balance: </label>
+                        <label id="balance" style="font-size: 2.5vh; float: left; margin-left: 5px; margin-bottom: 5px"> {{ funds }}</label>
+                    </div>
+                    <div class="form-group" style="display: flex; flex-direction: column; margin-bottom: 35px">
+                        <label for="money" style="position: relative; left: -345px; font-size: 2vh; margin-bottom: 3px">Deposit</label>
+                        <div style="display: flex; flex-direction: row">
+                        <p class="mb-3" style="position: relative; top: 7px; left: -4px; font-size: 2vh">$</p>
+                        <input aria-describedby="contract" class="form-control" id="money" name="money" type="text" placeholder="0.00">
+                        </div>
+                        <small class="form-text text-muted" id="contract" style="float: left; margin-bottom: 5px">&copy; OpenTEE is a fictional company made for spec purposes only. Funds do not represent fiat money.</small>
+                    </div>
+                    </div>
+                    <button class="btn btn-success" id="moneyin" style="margin-bottom: 15px" type="submit">Deposit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-8" id="p-bookings" style="display: none">
+    <div class="adjuster card">
+        <div class="card-body tab-content">
+            <div class="tab-pane active">
+                <div style="display: flex; flex-direction: column; margin-top: 12px">
+                <h6 style="margin-bottom: -5px; font-size: 1.9vh; float: left"><strong>Booking History</strong></h6>
+                <hr>
+                </div>
+                <form action="/account" method="POST">
+                    <div style="display: flex; flex-direction: column">
+                    <div class="form-group" style="margin-bottom: 10px">
+                        <label for="r-course" style="font-size: 2.5vh; float: left">Last Booking: </label>
+                        {% if r_course != 1 %}
+                        <label id="r-course" style="font-size: 2.5vh; float: left; margin-left: 5px; margin-bottom: 5px"> {{ r_course }}</label>
+                        {% else %}
+                        <label id="n-course" style="font-size: 2.5vh; float: left; margin-left: 5px; margin-bottom: 5px"> No Confirmed Bookings</label>
+                        {% endif %}
+                    </div>
+                    <div class="form-group" style="display: flex; flex-direction: column; margin-bottom: 15px">
+                        <label for="spent" style="position: relative; left: -283px; font-size: 2vh; margin-bottom: 3px">ALL-TIME SPENDING:</label>
+                        <label for="spent-amount" style="position: relative; left: -342px; font-size: 2vh; margin-bottom: 10px"> {{ spent }}</label>
+                        <small class="form-text text-muted" id="contract" style="position: relative; left: -62px; margin-bottom: 5px">&copy; OpenTEE is a fictional company made for spec purposes only. Funds do not represent fiat money.</small>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px">
+                        <input aria-describedby="fav-course" class="form-control" id="fav-course" name="fav-course" type="text" placeholder="Let Us Know Your Favorite Course!" style="margin-bottom: 10px">
+                        <button class="btn btn-success" id="course-btn" style="margin-bottom: 15px" type="submit">Submit</button>
+                    </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</main>
+</div>
+</body>
+<footer style="position: fixed; bottom: 0">
+    <nav class="bg-light border navbar navbar-expand-md navbar-light">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="navbar-nav me-auto mt-2">
+                    <li class="nav-item"><a class="nav-link" href="/forbusinesses">For Businesses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/aboutus">About Us</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto mt-2">
+                    <li class="nav-item">&copy; 2023 OpenTEE. All Rights Reserved.</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</footer>
+
+</html>
