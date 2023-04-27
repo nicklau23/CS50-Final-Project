@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" rel="stylesheet">
+    <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script type="module">
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDV9euJFhqU56xoWHB1wVnE6wGSaVgjZx8&callback=initMap&libraries=places&v=weekly" defer></script>
+    <script>
+         document.addEventListener('DOMContentLoaded', function (){
+            var input = document.getElementById("search-input");
+            var autocomplete = new google.maps.places.Autocomplete(input);
+
+            document.getElementById('totalsearch').addEventListener('submit', function(event) {
+                event.preventDefault();
+                var location = document.getElementById('search-input').value;
+
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ address: location }, function(results, status) {
+                    if (status === 'OK') {
+                        var userLocation = results[0].geometry.location;
+
+                        var request = {
+                            location: userLocation,
+                            radius: '5000',
+                            keyword: 'golf-course'
+                        };
+
+                        var service = new google.maps.places.PlacesService(document.createElement('div'));
+                        service.nearbySearch(request, function(results, status) {
+                            if (status === 'OK') {
+
+                                let numDisplay = 0;
+                                var list = document.getElementById('results');
+                                list.innerHTML = '';
+                                for (var i = 0; i < Math.min(3,results.length); i++) {
+                                    var golfCourse = results[i];
+
+
+
+                                    service.getDetails({placeId: results[i].place_id}, function(placeDetails, status) {
+                                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                                        var listItem = document.createElement('div');
+                                        var booker = document.createElement('button');
+
+                                        numDisplay++;
+
+                                        if (numDisplay === 3) {
+                                            document.getElementById("load-more").style.display = "flex";
+                                            document.getElementById("load-more").style.position = "absolute";
+                                            document.getElementById("load-more").style.textAlign = "center";
+                                            document.getElementById("load-more").style.top = "1230px";
+                                            document.getElementById("load-more").style.left = "815px";
+                                            document.getElementById("load-more").style.width = "175px";
+                                            document.getElementById("load-more").style.height = "auto";
+                                            document.getElementById("body").style.height = `calc(102vh + ${30}vh)`;
+
+
+                                        }
+
+                                        if (placeDetails.formatted_address) {
+                                            address = placeDetails.formatted_address;
+                                        } else {
+                                            address = 'Address not available';
+                                        }
+
+                                        if (placeDetails.formatted_phone_number) {
+                                            phoneNumber = placeDetails.formatted_phone_number;
+                                        } else {
+                                            phoneNumber = 'Phone number not available';
+                                        }
+
+                                        if (placeDetails.rating) {
+                                        rating = 'Rating: ' + placeDetails.rating;
+                                        } else {
+                                            rating = 'Rating not available';
+                                        }
+
+                                        listItem.style.marginBottom = "0px";
+                                        listItem.style.backgroundColor = "white";
+                                        listItem.style.width = "850px";
+                                        listItem.style.height = "170px";
+                                        listItem.style.position = "relative";
+                                        listItem.style.left = "-15vh";
+                                        listItem.style.zIndex = 3;
+                                        listItem.classList.add("border");
+
+                                        booker.style.position = "relative";
+                                        booker.style.top = "-33px";
+                                        booker.style.left = "23.75vh";
+                                        booker.style.height = "23px";
+                                        booker.style.width = "60px";
+                                        booker.classList.add("btn");
+                                        booker.classList.add("btn-success");
+                                        booker.innerText = "Book";
+                                        booker.style.display = "flex";
+                                        booker.style.justifyContent = "center";
+                                        booker.style.alignItems = "center";
+                                        booker.style.zIndex = 4;
+                                        booker.style.fontSize = "1.3vh";
+                                        booker.id = placeDetails.place_id;
+
+                                        booker.addEventListener('click', function () {
+                                            var book_card = document.getElementById("book-card");
+                                            book_card.style.display = "block";
+                                            book_card.style.position = "fixed";
+                                            book_card.style.top = "0px";
+                                            book_card.style.left = "-75px";
+                                            book_card.style.zIndex = 5;
+                                            list.style.filter = 'blur(5px)';
+                                            document.getElementById("load-more").style.filter = 'blur(5px)';
+                                            document.getElementById("searcher").style.filter = 'blur(5px)';
+                                            document.getElementById("video-background").style.filter = 'blur(5px)';
+
+                                            var title = document.getElementById("title");
+                                            title.innerHTML = placeDetails.name;
+                                            document.getElementById("course-name").value = placeDetails.name;
+                                            document.getElementById("course-id").value = placeDetails.place_id;
+
+                                            list.addEventListener('mousedown', function (){
+                                            book_card.style.display = "none";
+                                            list.style.filter = 'none';
+                                            document.getElementById("load-more").style.filter = 'none';
+                                            document.getElementById("searcher").style.filter = 'none';
+                                            document.getElementById("video-background").style.filter = 'none';
+                                            });
+
+                                            document.getElementById("load-more").addEventListener('mousedown', function (){
+                                            book_card.style.display = "none";
+                                            list.style.filter = 'none';
+                                            document.getElementById("load-more").style.filter = 'none';
+                                            document.getElementById("searcher").style.filter = 'none';
+                                            document.getElementById("video-background").style.filter = 'none';
+                                            });
+
+
+                                            document.getElementById("video-background").addEventListener('mousedown', function (){
+                                            book_card.style.display = "none";
+                                            list.style.filter = 'none';
+                                            document.getElementById("load-more").style.filter = 'none';
+                                            document.getElementById("searcher").style.filter = 'none';
+                                            document.getElementById("video-background").style.filter = 'none';
+                                            });
+
+                                            document.getElementById("searcher").addEventListener('mousedown', function (){
+                                            book_card.style.display = "none";
+                                            list.style.filter = 'none';
+                                            document.getElementById("load-more").style.filter = 'none';
+                                            document.getElementById("searcher").style.filter = 'none';
+                                            document.getElementById("video-background").style.filter = 'none';
+                                            });
+
+                                        });
+
+
+
+                                        listItem.classList.add("lister");
+
+                                        listItem.innerHTML = '<strong>' + placeDetails.name + '</strong><hr>'
+                                        + phoneNumber + '<br>' + address + '<br>' + rating;
+
+                                        list.appendChild(listItem);
+                                        list.appendChild(booker);
+
+
+
+
+                                    }
+                                    });
+
+
+
+                                }
+
+
+
+                                document.getElementById("load-more").addEventListener('click', function() {
+      // Loop through the remaining places and display them
+                                for (let i = numDisplay; i < results.length; i++) {
+                                    const place = results[i];
+
+                                    // Get the details of each place
+                                    service.getDetails({placeId: place.place_id}, function(placeDetails, status) {
+                                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                                        var Items = document.createElement('div');
+                                        var booker_s = document.createElement('button');
+
+
+                                        if (placeDetails.formatted_address) {
+                                            address = placeDetails.formatted_address;
+                                        } else {
+                                            address = 'Address not available';
+                                        }
+
+                                        if (placeDetails.formatted_phone_number) {
+                                            phoneNumber = placeDetails.formatted_phone_number;
+                                        } else {
+                                            phoneNumber = 'Phone number not available';
+                                        }
+
+                                        if (placeDetails.rating) {
+                                        rating = 'Rating: ' + placeDetails.rating;
+                                        } else {
+                                            rating = 'Rating not available';
+                                        }
+
+
+                                        Items.style.marginBottom = "20px";
+                                        Items.style.backgroundColor = "white";
+                                        Items.style.width = "850px";
+                                        Items.style.height = "170px";
+                                        Items.style.position = "relative";
+                                        Items.style.left = "-15vh";
+                                        Items.style.zIndex = 3;
+                                        Items.classList.add("border");
+                                        document.getElementById("body").style.height = `calc(100vh + ${145 * results.length}px)`;
+                                        Items.classList.add("lister");
+
+                                        booker_s.style.position = "relative";
+                                        booker_s.style.top = "-55px";
+                                        booker_s.style.left = "23.75vh";
+                                        booker_s.style.height = "23px";
+                                        booker_s.style.width = "60px";
+                                        booker_s.classList.add("btn");
+                                        booker_s.classList.add("btn-success");
+                                        booker_s.innerText = "Book";
+                                        booker_s.style.display = "flex";
+                                        booker_s.style.justifyContent = "center";
+                                        booker_s.style.alignItems = "center";
+                                        booker_s.style.zIndex = 4;
+                                        booker_s.style.fontSize = "1.3vh";
+                                        booker_s.id = placeDetails.place_id;
+
+                                        booker_s.addEventListener('click', function () {
+                                            var books_card = document.getElementById("book-card");
+                                            books_card.style.display = "block";
+                                            books_card.style.position = "fixed";
+                                            books_card.style.top = "0px";
+                                            books_card.style.zIndex = 5;
+                                            books_card.style.left = "-75px";
+
+                                            var title_s = document.getElementById("title");
+                                            title.innerHTML = placeDetails.name;
+                                            document.getElementById("course-name").value = placeDetails.name;
+                                            document.getElementById("course-id").value = placeDetails.place_id;
+
+
+                                            list.style.filter = 'blur(5px)';
+                                            document.getElementById("load-more").style.filter = 'blur(5px)';
+                                            document.getElementById("searcher").style.filter = 'blur(5px)';
+                                            document.getElementById("video-background").style.filter = 'blur(5px)';
+
+                                            list.addEventListener('mousedown', function (){
+                                            books_card.style.display = "none";
+                                            list.style.filter = 'none';
+                                            document.getElementById("load-more").style.filter = 'none';
+                                            document.getElementById("searcher").style.filter = 'none';
+                                            document.getElementById("video-background").style.filter = 'none';
+                                            });
+
+                                            document.getElementById("load-more").addEventListener('mousedown', function (){
+                                            books_card.style.display = "none";
+                                            list.style.filter = 'none';
+                                            document.getElementById("load-more").style.filter = 'none';
+                                            document.getElementById("searcher").style.filter = 'none';
+                                            document.getElementById("video-background").style.filter = 'none';
+                                            });
+
+
+                                            document.getElementById("video-background").addEventListener('mousedown', function (){
+                                            books_card.style.display = "none";
+                                            list.style.filter = 'none';
+                                            document.getElementById("load-more").style.filter = 'none';
+                                            document.getElementById("searcher").style.filter = 'none';
+                                            document.getElementById("video-background").style.filter = 'none';
+                                            });
+
+                                            document.getElementById("searcher").addEventListener('mousedown', function (){
+                                            books_card.style.display = "none";
+                                            list.style.filter = 'none';
+                                            document.getElementById("load-more").style.filter = 'none';
+                                            document.getElementById("searcher").style.filter = 'none';
+                                            document.getElementById("video-background").style.filter = 'none';
+                                            });
+
+
+
+                                        });
+
+
+                                        Items.innerHTML = '<strong>' + placeDetails.name + '</strong><hr>'
+                                        + phoneNumber + '<br>' + address + '<br>' + rating;
+
+
+                                        list.appendChild(Items);
+                                        list.appendChild(booker_s);
+                                    }
+                                    });
+                                }
+                                // Hide the load more button
+                                document.getElementById("load-more").style.display = "none";
+                                });
+                            } else {
+                                alert('Error: ' + status);
+                            }
+                        });
+                    } else {
+                        alert('Error: ' + status);
+                    }
+                });
+
+            });
+
+            $(document).ready(function() {
+            $('.datepicker').datepicker({
+            defaultDate: new Date(),
+            minDate: 0
+            });
+        });
+
+            document.getElementById("count").addEventListener('change', ()=> {
+                const display_price = parseInt(document.getElementById("count").value) * 20;
+                document.getElementById("shown-amount").innerHTML = 'Final Price (' + document.getElementById("count").value + ' players): ' + '$' + display_price + '.00';
+                document.getElementById("shown-amount").style.position = "relative";
+                document.getElementById("pricing").style.display = "block";
+                document.getElementById("pricer").value = display_price;
+
+            });
+        })
+    </script>
+    <link href="/static/140399.png" rel="icon">
+    <link href="/static/styles.css" rel="stylesheet">
+    <title>OpenTEE: Courses</title>
+</head>
+
+<body id="body">
+    <nav class="bg-light border navbar navbar-expand-md navbar-light" style="z-index: 1">
+        <div class="container-fluid">
+            <img src="/static/140399.png" class="logo" rel="icon">
+            <a class="navbar-brand" href="/"><span class="blue">Open</span><span class="green">TEE</span></a>
+            <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+                {% if session["user_id"] %}
+                <ul class="navbar-nav me-auto mt-2">
+                    <li class="nav-item"><a class="nav-link" href="/courses"> Find Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/bookings">Bookings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/account">Account</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto mt-2">
+                    <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+                </ul>
+                {% else %}
+                        <ul class="navbar-nav ms-auto mt-2">
+                            <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
+                        </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    {% if get_flashed_messages() %}
+            <header>
+                <div class="alert alert-primary mb-0 text-center" role="alert">
+                    {{ get_flashed_messages() | join(" ") }}
+                </div>
+            </header>
+    {% endif %}
+
+
+    <main class="container-fluid py-5 text-center">
+
+        <div class="video-background" id="video-background">
+            <video autoplay loop muted>
+                <source src="/static/golf-court-700.mp4/" type="video/mp4">
+            </video>
+        </div>
+
+    <div class="border" id="searcher" style="background-color: white; position: absolute; top: 250px; left: 66.5vh; height: 350px; width: 450px">
+        <img class="new_logo" src="/static/140399.png">
+        <form class="input_cont" id="totalsearch" style="position: relative; margin-bottom: -20px">
+            <input autocomplete="off" class="input form-control" id="search-input" name="search-box" placeholder="Enter a city" autofocus type="text">
+            <button class="btn btn-success" id="searchbtn" type="submit">Find Courses</button>
+        </form>
+    </div>
+    <div style="position: relative; top: 500px; bottom: 4vh; left: 57.5vh; width: 600px; height: 200px; margin-top: 25px; margin-bottom: 50px">
+    <ul class="mb-3" id="results" style="margin-bottom: 3vh"></ul>
+    </div>
+    <button class="btn btn-primary" id="load-more" type="button" style="display: none; justify-content: center; align-items: center; text-align: center">Load More</button>
+
+
+    <div class="col-md-8" id="book-card" style="display: none">
+        <div class="adjuster card">
+            <div class="card-body tab-content">
+                <div class="tab-pane active">
+                    <div style="display: flex; flex-direction: column; margin-top: 12px">
+                    <h6 style="margin-bottom: -5px; font-size: 1.9vh; float: left"><strong id="title"></strong></h6>
+                    <hr>
+                    </div>
+                    <form action="/courses" method="post">
+                        <div style="display: flex; flex-direction: column">
+                        <div class="form-group">
+                            <label for="fullname" style="float: left">Reservation Name</label>
+                            <input aria-describedby="reservenameassist" class="form-control" id="reserve-name" name="reserve-name" type="text" placeholder="Reservation Name">
+                            <input style="display: none" name="course-name" id="course-name" type="text">
+                            <input style="display: none" name="course-id" id="course-id" type="text">
+                            <small class="form-text text-muted" id="reservenameassist" style="float: left; margin-bottom: 5px">This will be the name that will be listed under the reservation. Please submit your last name.</small>
+                        </div>
+                        <div class="form-group" style="display: flex; flex-direction: column; float: left; margin-bottom: 10px">
+                            <label for="players" style="position: relative; left: -285px; margin-bottom: 10px">Number of Players (Max 4)</label>
+                            <select aria-label="Select choice" class="form-select" name="count" id="count">
+                                <option disabled selected>Select</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                            <small class="form-text text-muted" id="playersassist" style="position: relative; left: -247px; margin-bottom: 0px">Prices shown reflect the per-player rate.</small>
+                        </div>
+                        <div class="form-group" style="display: flex; flex-direction: column; float: left; margin-bottom: 10px">
+                            <label for="times" style="position: relative; left: -325px; margin-bottom: 10px">Times Available</label>
+                            <select aria-label="Select choice" class="form-select" name="time-select" id="time-select">
+                                <option disabled selected>Select</option>
+                                <option value="7:30 AM">7:30 AM</option>
+                                <option value="7:45 AM">7:45 AM</option>
+                                <option value="8:00 AM">8:00 AM</option>
+                                <option value="8:15 AM">8:15 AM</option>
+                                <option value="8:30 AM">8:30 AM</option>
+                                <option value="8:45 AM">8:45 AM</option>
+                                <option value="9:00 AM">9:00 AM</option>
+                                <option value="9:15 AM">9:15 AM</option>
+                                <option value="9:30 AM">9:30 AM</option>
+                                <option value="9:45 AM">9:45 AM</option>
+                                <option value="10:00 AM">10:00 AM</option>
+                                <option value="10:15 AM">10:15 AM</option>
+                                <option value="10:30 AM">10:30 AM</option>
+                                <option value="10:45 AM">10:45 AM</option>
+                                <option value="11:00 AM">11:00 AM</option>
+                                <option value="12:30 PM">12:30 PM</option>
+                                <option value="12:45 PM">12:45 PM</option>
+                                <option value="1:00 PM">1:00 PM</option>
+                                <option value="1:15 PM">1:15 PM</option>
+                                <option value="1:30 PM">1:30 PM</option>
+                                <option value="1:45 PM">1:45 PM</option>
+                                <option value="2:00 PM">2:00 PM</option>
+                                <option value="2:15 PM">2:15 PM</option>
+                                <option value="2:30 PM">2:30 PM</option>
+                                <option value="2:45 PM">2:45 PM</option>
+                                <option value="3:00 PM">3:00 PM</option>
+                                <option value="3:15 PM">3:15 PM</option>
+                                <option value="3:30 PM">3:30 PM</option>
+                                <option value="3:45 PM">3:45 PM</option>
+                                <option value="4:00 PM">4:00 PM</option>
+                                <option value="4:15 PM">4:15 PM</option>
+                                <option value="4:30 PM">4:30 PM</option>
+                                <option value="4:45 PM">4:45 PM</option>
+                                <option value="5:00 PM">5:00 PM</option>
+                            </select>
+                            <small class="form-text text-muted" id="timesassist" style="position: relative; left: -227px; margin-bottom: 5px">Seasonal business hours may not be reflected.</small>
+                        </div>
+                        <div class="form-group">
+
+                                <label for="datepicker" style="position: relative; left: -335px">Select Date:</label>
+                                <input type="text" class="form-control datepicker" data-provide="datepicker" name="calendar" id="calendar">
+
+                        </div>
+                        <div class="form-group" id="pricing" style="display: none">
+                                <label for="shown-amount" id="shown-amount" style="position: relative; left: -220px; font-size: 2.3vh"></label>
+                                <input style="display: none" name="pricer" id="pricer" type="text">
+                        </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 20px">
+                            <small class="form-text text-muted" id="reminder" style="float: left">All fields on this page are required. Once submitting, your booking will be confirmed.</small>
+                        </div>
+                        <button class="btn btn-success" id="book-now" style="position: relative; left: -270px; margin-top: 15px; margin-bottom: 15px; margin-right: 7px" type="submit">Book</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    </main>
+
+</body>
+
+<footer style="position: fixed; bottom: 0; z-index: 7">
+    <nav class="bg-light border navbar navbar-expand-md navbar-light">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="navbar-nav me-auto mt-2">
+                    <li class="nav-item"><a class="nav-link" href="/forbusinesses">For Businesses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/aboutus">About Us</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto mt-2">
+                    <li class="nav-item">&copy; 2023 OpenTEE. All Rights Reserved.</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</footer>
+
+
+</html>
